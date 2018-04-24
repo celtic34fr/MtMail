@@ -19,6 +19,7 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mail\Message;
+use Zend\Mime\Mime;
 use Zend\View\Model\ModelInterface;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Part as MimePart;
@@ -293,7 +294,7 @@ class Composer implements EventManagerAwareInterface
             // force multipart/alternative content type
             if ($type != 'multipart/related') {
                 $message->getHeaders()->get('content-type')->setType('multipart/related')
-                    ->addParameter('boundary', $event->getBody()->getMime()->boundary());
+                    ->addParameter('boundary', $message->getBody()->getMime()->boundary());
             }
         }
         return $message;

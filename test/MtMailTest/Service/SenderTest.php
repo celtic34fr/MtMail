@@ -13,6 +13,7 @@ use MtMail\Event\SenderEvent;
 use MtMail\Service\Sender;
 use Zend\EventManager\EventManager;
 use Zend\Mail\Message;
+use Zend\Mail\Transport\TransportInterface;
 
 class SenderTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,14 +29,14 @@ class SenderTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $transport = $this->getMock('Zend\Mail\Transport\TransportInterface');
+        $transport = $this->getMock(TransportInterface::class);
         $this->service = new Sender($transport);
     }
 
     public function testSendPassesMessageToTransportObject()
     {
         $message = new Message();
-        $transport = $this->getMock('Zend\Mail\Transport\TransportInterface', ['send']);
+        $transport = $this->getMock(TransportInterface::class, ['send']);
         $transport->expects($this->once())->method('send')
             ->with($message);
         $service = new Sender($transport);
@@ -51,9 +52,9 @@ class SenderTest extends \PHPUnit_Framework_TestCase
 
     public function testSendTriggersEvents()
     {
-        $transport = $this->getMock('Zend\Mail\Transport\TransportInterface', ['send']);
+        $transport = $this->getMock(TransportInterface::class, ['send']);
         $transport->expects($this->once())->method('send')
-            ->with($this->isInstanceOf('Zend\Mail\Message'));
+            ->with($this->isInstanceOf(Message::class));
 
         $em = new EventManager();
         $listener = function ($event) {

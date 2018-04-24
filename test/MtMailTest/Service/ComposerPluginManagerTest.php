@@ -11,6 +11,7 @@ namespace MtMailTest\Service;
 
 use MtMail\Exception\RuntimeException;
 use MtMail\Service\ComposerPluginManager;
+use MtMail\ComposerPlugin\PluginInterface;
 use PHPUnit_Framework_TestCase;
 use stdClass;
 use Zend\ServiceManager\ServiceManager;
@@ -37,7 +38,7 @@ class ComposerPluginManagerTest extends PHPUnit_Framework_TestCase
 
     public function testValidatePluginDoesNothingIfPluginIsValid()
     {
-        $mock = $this->getMock('MtMail\ComposerPlugin\PluginInterface');
+        $mock = $this->getMock(PluginInterface::class);
         $this->pluginManager->validatePlugin($mock);
     }
 }

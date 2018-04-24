@@ -10,12 +10,14 @@
 namespace MtMailTest\Service;
 
 use MtMail\Event\ComposerEvent;
+use MtMail\Renderer\RendererInterface;
 use MtMail\Service\Composer;
 use MtMailTest\Test\HtmlTemplate;
 use MtMailTest\Test\TextTemplate;
 use Prophecy\Argument;
 use Zend\EventManager\EventManager;
 use Zend\View\Model\ViewModel;
+use Zend\View\Model\ModelInterface;
 
 class ComposerTest extends \PHPUnit_Framework_TestCase
 {
@@ -31,13 +33,13 @@ class ComposerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $renderer = $this->getMock('MtMail\Renderer\RendererInterface');
+        $renderer = $this->getMock(RendererInterface::class);
         $this->service = new Composer($renderer);
     }
 
     public function testRendererIsMutable()
     {
-        $renderer = $this->getMock('MtMail\Renderer\RendererInterface');
+        $renderer = $this->getMock(RendererInterface::class);
         $this->assertEquals($renderer, $this->service->setRenderer($renderer)->getRenderer());
     }
 
@@ -45,8 +47,8 @@ class ComposerTest extends \PHPUnit_Framework_TestCase
     {
         $template = new TextTemplate();
 
-        $renderer = $this->getMock('MtMail\Renderer\RendererInterface', ['render']);
-        $renderer->expects($this->once())->method('render')->with($this->isInstanceOf('Zend\View\Model\ModelInterface'))
+        $renderer = $this->getMock(RendererInterface::class, ['render']);
+        $renderer->expects($this->once())->method('render')->with($this->isInstanceOf(ModelInterface::class))
             ->will($this->returnValue('MAIL_BODY'));
 
         $service = new Composer($renderer);
@@ -58,8 +60,8 @@ class ComposerTest extends \PHPUnit_Framework_TestCase
     {
         $template = new HtmlTemplate();
 
-        $renderer = $this->getMock('MtMail\Renderer\RendererInterface', ['render']);
-        $renderer->expects($this->once())->method('render')->with($this->isInstanceOf('Zend\View\Model\ModelInterface'))
+        $renderer = $this->getMock(RendererInterface::class, ['render']);
+        $renderer->expects($this->once())->method('render')->with($this->isInstanceOf(ModelInterface::class))
             ->will($this->returnValue('MAIL_BODY'));
 
         $service = new Composer($renderer);
@@ -77,8 +79,8 @@ class ComposerTest extends \PHPUnit_Framework_TestCase
 
     public function testComposeTriggersEvents()
     {
-        $renderer = $this->getMock('MtMail\Renderer\RendererInterface', ['render']);
-        $renderer->expects($this->once())->method('render')->with($this->isInstanceOf('Zend\View\Model\ModelInterface'))
+        $renderer = $this->getMock(RendererInterface::class, ['render']);
+        $renderer->expects($this->once())->method('render')->with($this->isInstanceOf(ModelInterface::class))
             ->will($this->returnValue('MAIL_BODY'));
 
         $em = new EventManager();
@@ -138,7 +140,7 @@ class ComposerTest extends \PHPUnit_Framework_TestCase
     {
         $replacement = new ViewModel();
         $replacement->setTemplate('some_template.phtml');
-        $renderer = $this->getMock('MtMail\Renderer\RendererInterface', ['render']);
+        $renderer = $this->getMock(RendererInterface::class, ['render']);
         $renderer->expects($this->once())->method('render')->with($this->equalTo($replacement))
             ->will($this->returnValue('MAIL_BODY'));
 
@@ -156,8 +158,8 @@ class ComposerTest extends \PHPUnit_Framework_TestCase
     {
         $viewModel = new ViewModel();
         $template = new TextTemplate();
-        $renderer = $this->prophesize('MtMail\Renderer\RendererInterface');
-        $renderer->render(Argument::type('Zend\View\Model\ViewModel'))->willReturn('BODY');
+        $renderer = $this->prophesize(RendererInterface::class);
+        $renderer->render(Argument::type(ViewModel::class))->willReturn('BODY');
         $service = new Composer($renderer->reveal());
 
         $message = $service->compose([], $template, $viewModel);

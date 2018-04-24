@@ -1,14 +1,13 @@
 <?php
 
+use Zend\Mail\Transport\Smtp;
+
 return [
 
     'mt_mail' => [
 
-        /*
-         * Transport settings
-         */
-
-        'transport' => 'Zend\Mail\Transport\Smtp',
+        /* Transport settings */
+        'transport' => Smtp::class,
         'transport_options' => [
             'host' => 'some-host.com',
             'connection_class' => 'login',
