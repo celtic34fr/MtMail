@@ -87,4 +87,12 @@ class Mail
     {
         return $this->composer->attachments($message, $attachments);
     }
+
+    public function formatEmail($email, $name = null)
+    {
+        if (empty($email)) { throw new \Exception('email empty not allowed'); }
+        if (empty($name))  { $name = $email; }
+
+        return $name.'<'.$email.'>';
+    }
 }
